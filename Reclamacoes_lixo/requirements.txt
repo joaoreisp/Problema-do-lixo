@@ -1,0 +1,13 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy 
+from flask_wtf.csrf import CSRFProtect
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.wrappers import Response
+
+app = Flask(__name__, static_folder='app/static', template_folder='app/templates')
+app.config.from_pyfile('config.py')
+csrf = CSRFProtect(app)
+db = SQLAlchemy(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)
