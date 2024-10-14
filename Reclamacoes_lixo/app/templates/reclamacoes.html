@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Reclamação</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <p> Reclama Cidade!</p>
+        </div>
+        <div class="nav-search">
+            <input type="text" placeholder="Pesquisar">
+        </div>
+        <div class="nav-links">
+            <a href="#"> <img src='{{ url_for("static", filename="assets/icons/home.png") }}' alt=""> </a>
+            <a href="#"> <img src='{{ url_for("static", filename="assets/icons/sms.png") }}' alt=""> </a>
+            <a href="#"> <img src='{{ url_for("static", filename="assets/icons/grafico.png") }}' alt=""> </a>
+            <div class="profile-icon">
+                <span>NC</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-content">
+        {% for reclamacao in reclamacoes %}
+        <div class="complaint-form">
+            <div class="user-info">
+                <div class="user-icon">NC</div>
+                <div class="user-details">
+                    <h2>{{ reclamacao.usuario.nome }} - {{ reclamacao.usuario.profissao }}</h2>
+                    <p>{{ reclamacao.cidade }} - {{ reclamacao.bairro }} | {{
+                        reclamacao.data_criacao.strftime('%d/%m/%Y') }}</p>
+                </div>
+            </div>
+
+            <div class="tag-section">
+                {% if reclamacao.tipo_reclamacao %}
+                <span class="tag">{{ reclamacao.tipo_reclamacao.tipo }}</span> <!-- Mostra o tipo se disponível -->
+                {% else %}
+                <span class="tag">Tipo não disponível</span> <!-- Mensagem caso não haja tipo -->
+                {% endif %}
+            </div>
+            <div class="complaint-description">
+                <p>{{ reclamacao.descricao }}</p>
+            </div>
+
+            {% if reclamacao.anexo %}
+            <div class="complaint-attachment">
+                <img src="{{ url_for('static', filename='uploads/' ~ reclamacao.anexo) }}" alt="Anexo">
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
