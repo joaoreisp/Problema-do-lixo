@@ -15,3 +15,4 @@ class Config:
         )
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_TIME_LIMIT = 86400  # 86400 segundos = 1 dia

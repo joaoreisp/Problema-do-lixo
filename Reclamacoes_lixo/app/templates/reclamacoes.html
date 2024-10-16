@@ -53,7 +53,8 @@
 
             {% if reclamacao.anexo %}
             <div class="complaint-attachment">
-                <img src="{{ url_for('static', filename='uploads/' ~ reclamacao.anexo) }}" alt="Anexo">
+                <img src="{{ url_for('static', filename=reclamacao.anexo) }}" alt="Anexo da Reclamacao">
+
             </div>
             {% endif %}
 
@@ -61,5 +62,3 @@
         {% endfor %}
     </div>
 </body>
-
-</html>

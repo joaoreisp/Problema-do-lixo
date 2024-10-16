@@ -1,31 +1,37 @@
 from datetime import datetime
-import os
 from flask import Flask, request, redirect, url_for, render_template, flash, session
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from app.models import db, Usuario, Reclamacao, tipo_de_reclamacoes
+from app.models import db, Usuario, Reclamacao, TipoDeReclamacao
 from config import Config  
+import os
+
 app = Flask(__name__, static_folder='app/static', template_folder='app/templates')
 
-# Defina o diretório onde as imagens serão armazenadas
-UPLOAD_FOLDER = 'static/uploads/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 # Verifica se a extensão do arquivo é permitida
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    
+# Defina o diretório onde as imagens serão armazenadas
+UPLOAD_FOLDER = os.path.join('Reclamacoes_lixo', 'app', 'static', 'uploads')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
-
+# Configurações do app
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limite de 16MB para uploads
 app.config.from_object(Config)
+
+
 
 
 app.secret_key = app.config['SECRET_KEY'] 
 csrf = CSRFProtect(app)
-
 
 db.init_app(app)
 
@@ -68,6 +74,7 @@ def cadastrar_usuario():
             db.session.commit()
             print(f"Usuário {nome} adicionado com sucesso!")  
             return '', 204  
+            
         except Exception as e:
             db.session.rollback()  
             print(f"Erro ao salvar os dados: {str(e)}")  
@@ -85,63 +92,79 @@ def login():
         usuario = Usuario.query.filter_by(email=email).first()
         if usuario and check_password_hash(usuario.senha, senha):
             session['usuario_id'] = usuario.id 
-            return render_template('index.html')
+            return redirect(url_for('criar_reclamacao'))
         else:
             flash('E-mail ou senha incorretos', 'danger')  #
             return redirect(url_for('login'))
-
     return render_template('login.html')
        
        
 @app.route('/index', methods=['GET', 'POST'])
 def criar_reclamacao():
+    
+    tipos_de_reclamacao = TipoDeReclamacao.query.all()  
+    usuarios = Usuario.query.all()  
+    reclamacao = Reclamacao.query.first()  
+       
+       
     if request.method == 'POST':
-        # Outros dados do formulário
-        descricao = request.form['descricao']
+        # Captura os dados do formulário
+        tipo_reclamacao_id = request.form['tipo_reclamacao_id']
         cidade = request.form['cidade']
         bairro = request.form['bairro']
+        descricao = request.form['descricao']
         usuario_id = session['usuario_id']
-
+        
+        print(tipo_reclamacao_id, cidade, bairro, descricao, usuario_id, session)
         # Verifica se um arquivo foi anexado
-        if 'anexo' not in request.files:
+        if 'anexo' not in request.files or request.files['anexo'].filename == '':
             flash('Nenhum arquivo anexado', 'danger')
             return redirect(request.url)
-
+    
         file = request.files['anexo']
-
-        if file.filename == '':
-            flash('Nenhuma imagem selecionada', 'danger')
-            return redirect(request.url)
-
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)  # Salva a imagem no diretório
 
-            # Cria a reclamação no banco de dados, armazenando o caminho da imagem
-            nova_reclamacao = Reclamacao(
-                usuario_id=usuario_id,
-                descricao=descricao,
-                cidade=cidade,
-                bairro=bairro,
-                anexo=filename,  # Armazena o nome do arquivo no banco
-                data=datetime.now()
-            )
-            db.session.add(nova_reclamacao)
-            db.session.commit()
+            try:
+                # Salva a imagem no diretório
+                file.save(filepath)
+                
+                # Normaliza o caminho do arquivo para uso no banco de dados
+                relative_filepath = os.path.join('uploads', filename).replace('\\', '/')
+  
 
-            flash('Reclamação criada com sucesso!', 'success')
-            return redirect(url_for('listar_reclamacoes'))
-    usuarios = Usuario.query.all()
-    print(usuarios)
-    return render_template('index.html', usuarios=usuarios)
+                # Cria a reclamação no banco de dados, armazenando o nome do arquivo (ou caminho, conforme necessário)
+                nova_reclamacao = Reclamacao(
+                    usuario_id=usuario_id,
+                    tipo_reclamacao_id=tipo_reclamacao_id,
+                    descricao=descricao,
+                    cidade=cidade,
+                    bairro=bairro,
+                    anexo=relative_filepath    # Nome do arquivo
+                )
+
+                db.session.add(nova_reclamacao)
+                db.session.commit()
+                flash('Reclamação criada com sucesso!', 'success')
+                return redirect(url_for('listar_reclamacoes'))
+
+            except Exception as e:
+                db.session.rollback()  # Reverter em caso de erro
+                print(f"Erro ao salvar a reclamação: {str(e)}")
+                flash(f'Ocorreu um erro ao salvar a reclamação: {str(e)}', 'danger')
+
+        else:
+            flash('Formato de arquivo não permitido', 'danger')
+
+    return render_template('index.html', tipos_de_reclamacao=tipos_de_reclamacao, usuarios=usuarios, reclamacao=reclamacao)
        
 @app.route('/reclamacoes', methods=['GET'])
 def listar_reclamacoes():
     try:
         usuarios = Usuario.query.all()  # Consulta todos os usuários
         reclamacoes = Reclamacao.query.all()
-        tipo_de_reclamacao = tipo_de_reclamacoes.query.all()
+        tipo_de_reclamacao = TipoDeReclamacao.query.all()
         # Garantir que 'anexo' é tratado como string (ou nulo) em cada reclamação
         for reclamacao in reclamacoes:
             
@@ -152,8 +175,10 @@ def listar_reclamacoes():
         print(f"Erro ao buscar os dados: {str(e)}")
         return "Houve um erro ao buscar os dados", 500
 
-
-
+@app.route('/exibir_reclamacao/<int:id>')
+def exibir_reclamacao(id):
+    reclamacao = Reclamacao.query.get_or_404(id)
+    return f"Reclamação: {reclamacao.descricao}, Usuário: {reclamacao.usuario.nome}, Cidade: {reclamacao.cidade}"
 
 
 if __name__ == '__main__':
