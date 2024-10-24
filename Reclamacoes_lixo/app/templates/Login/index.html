@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/reset.css') }}">
-    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/inputs-labels.css') }}">
-    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/style.css') }}">
-
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/inputs-labels.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/midia.css') }}">
     <title>Formulario de Cadastro</title>
 </head>
 
@@ -43,7 +42,8 @@
             </div>
 
             <div class="form-image">
-                <img src="img/img_login.jpeg" alt="Imagem de cadastro">
+                <img src="{{ url_for('static', filename='css/css_login/img/img_login.jpeg') }}"
+                    alt="Imagem de cadastro">
             </div>
 
         </div>
