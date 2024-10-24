@@ -4,7 +4,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from app.models import db, Usuario, Reclamacao, TipoDeReclamacao
+from app.models import db, Usuario, Reclamacao
 from config import Config  
 import os
 
@@ -41,12 +41,11 @@ def cadastrar_usuario():
         nome = request.form['nome']
         sobrenome = request.form['sobrenome']
         cidade = request.form['cidade']
-        uf = request.form['uf']
         bairro = request.form['bairro']
         profissao = request.form['profissao']
         email = request.form['email']
         senha = request.form['senha']
-        confirmar_senha = request.form['confirmar-senha']
+        confirmar_senha = request.form['confirmSenha']
         
      
         if senha != confirmar_senha:
@@ -62,7 +61,6 @@ def cadastrar_usuario():
             nome=nome,
             sobrenome=sobrenome,
             cidade=cidade,
-            uf=uf,
             bairro=bairro,
             profissao=profissao,
             email=email,
@@ -80,7 +78,7 @@ def cadastrar_usuario():
             print(f"Erro ao salvar os dados: {str(e)}")  
             return "Houve um erro ao salvar os dados", 500
     
-    return render_template('cadastro.html')
+    return render_template('Cadastro/index.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -88,11 +86,10 @@ def login():
         email = request.form['email']
         senha = request.form['senha']
 
-        
         usuario = Usuario.query.filter_by(email=email).first()
         if usuario and check_password_hash(usuario.senha, senha):
             session['usuario_id'] = usuario.id 
-            return redirect(url_for('criar_reclamacao'))
+            return redirect(url_for('listar_reclamacoes'))
         else:
             flash('E-mail ou senha incorretos', 'danger')  #
             return redirect(url_for('login'))
@@ -102,20 +99,19 @@ def login():
 @app.route('/index', methods=['GET', 'POST'])
 def criar_reclamacao():
     
-    tipos_de_reclamacao = TipoDeReclamacao.query.all()  
     usuarios = Usuario.query.all()  
     reclamacao = Reclamacao.query.first()  
        
        
     if request.method == 'POST':
         # Captura os dados do formulário
-        tipo_reclamacao_id = request.form['tipo_reclamacao_id']
-        cidade = request.form['cidade']
-        bairro = request.form['bairro']
-        descricao = request.form['descricao']
-        usuario_id = session['usuario_id']
+        tipo_reclamacao = request.form['sector']
+        cidade = request.form['city']
+        bairro = request.form['neighborhood']
+        descricao = request.form['complaintContent']
         
-        print(tipo_reclamacao_id, cidade, bairro, descricao, usuario_id, session)
+        
+        print(tipo_reclamacao, cidade, bairro, descricao, session)
         # Verifica se um arquivo foi anexado
         if 'anexo' not in request.files or request.files['anexo'].filename == '':
             flash('Nenhum arquivo anexado', 'danger')
@@ -136,8 +132,8 @@ def criar_reclamacao():
 
                 # Cria a reclamação no banco de dados, armazenando o nome do arquivo (ou caminho, conforme necessário)
                 nova_reclamacao = Reclamacao(
-                    usuario_id=usuario_id,
-                    tipo_reclamacao_id=tipo_reclamacao_id,
+                    #colocar o ID
+                    tipo_reclamacao=tipo_reclamacao,
                     descricao=descricao,
                     cidade=cidade,
                     bairro=bairro,
@@ -157,20 +153,19 @@ def criar_reclamacao():
         else:
             flash('Formato de arquivo não permitido', 'danger')
 
-    return render_template('index.html', tipos_de_reclamacao=tipos_de_reclamacao, usuarios=usuarios, reclamacao=reclamacao)
+    return render_template('Reclamar/index.html', usuarios=usuarios, reclamacao=reclamacao)
        
 @app.route('/reclamacoes', methods=['GET'])
 def listar_reclamacoes():
     try:
         usuarios = Usuario.query.all()  # Consulta todos os usuários
         reclamacoes = Reclamacao.query.all()
-        tipo_de_reclamacao = TipoDeReclamacao.query.all()
         # Garantir que 'anexo' é tratado como string (ou nulo) em cada reclamação
         for reclamacao in reclamacoes:
             
             print(reclamacao.data_criacao)  # Acessa o atributo 'data_criacao'
             reclamacao.anexo = str(reclamacao.anexo) if reclamacao.anexo else None
-        return render_template('reclamacoes.html', usuarios=usuarios, reclamacoes=reclamacoes, tipo_de_reclamacao=tipo_de_reclamacao)  # Passa os dados para o template
+        return render_template('Home_page/index.html', usuarios=usuarios, reclamacoes=reclamacoes)  # Passa os dados para o template
     except Exception as e:
         print(f"Erro ao buscar os dados: {str(e)}")
         return "Houve um erro ao buscar os dados", 500

@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/reset.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/inputs-labels.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_login/midia.css') }}">
     <title>Formulario de Cadastro</title>
 </head>
@@ -16,7 +16,8 @@
         <div class="register-container" id="register-container">
             <div class="form-container">
 
-                <form class="form form-register" action="../Home_page/index.html">
+                <form class="form form-register" action="/" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="title-regs">
                         <h2 class="form-header">Bem-vindo(a) de volta</h2>
                         <p class="form-text">Preencha os campos abaixo</p>
@@ -36,7 +37,7 @@
                         <a href="#">Esqueceu a senha?</a>
                         <button class="login-button">Fazer Login</button>
                         <p class="form-text form-text-baixo">Não tem uma conta? <a
-                                href="../Cadastro/index.html">Cadastre-se</a></p>
+                                href="{{ url_for('cadastrar_usuario') }}">Cadastre-se</a></p>
                     </div>
                 </form>
             </div>

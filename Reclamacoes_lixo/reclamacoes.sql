@@ -8,11 +8,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nome VARCHAR(255) NOT NULL,
     sobrenome VARCHAR(255) NOT NULL,
     cidade VARCHAR(255) NOT NULL,
-    uf VARCHAR(2) NOT NULL, -- Estado, representado com 2 caracteres
     bairro VARCHAR(255) NOT NULL,
     profissao VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE, -- Adicionando campo de email como único
-    senha VARCHAR(10) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -32,7 +31,7 @@ CREATE TABLE IF NOT EXISTS reclamacoes (
 );
 
 -- Tabela tipo_reclamacao
-CREATE TABLE IF NOT EXISTS tipos_de_reclamacoes (
+CREATE TABLE IF NOT EXISTS tipos_de_reclamacao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tipo VARCHAR(100) NOT NULL
 );
