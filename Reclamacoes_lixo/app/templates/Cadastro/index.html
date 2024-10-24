@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/inputs-labels.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/midia.css">
+    <title>Formulario de Cadastro</title>
+</head>
+
+<body>
+    <main>
+        <div class="register-container" id="register-container">
+            <div class="form-container">
+
+                <form class="form form-register" action="../Login/index.html">
+                    <div class="title-regs">
+                        <h2 class="form-header">Crie uma conta</h2>
+                        <p class="form-text" >Preencha os campos abaixo</p>
+                    </div>
+                    <div class="input-group">
+
+                        <div class="inputs-two">
+
+                            <div class="input-box">
+                                <label for="nome">Nome</label>
+                                <input id="nome" type="text" name="nome" placeholder="Digite seu nome" required>
+                            </div>
+    
+                            <div class="input-box">
+                                <label for="sobrenome">Sobrenome</label>
+                                <input id="sobrenome" type="text" name="sobrenome" placeholder="Digite seu sobrenome" required>
+                            </div>
+    
+                        </div>
+
+                        <div class="inputs-two">
+
+                            <div class="input-box">
+                                <label for="cidade">Cidade</label>
+                                <input id="cidade" type="text" name="cidade" placeholder="Digite sua cidade" required>
+                            </div>
+    
+                            <div class="input-box">
+                                <label for="bairro">Bairro</label>
+                                <input id="bairro" type="text" name="bairro" placeholder="Digite seu bairro" required>
+                            </div>
+
+                        </div>
+    
+                        <div class="input-box">
+                            <label for="profissao">Profissão</label>
+                            <input id="profissao" type="text" name="profissao" placeholder="Digite sua profissão" required>
+                        </div>
+    
+                        <div class="input-box">
+                            <label for="email">E-mail</label>
+                            <input id="email" type="email" name="email" placeholder="Digite seu e-mail" required>
+                        </div>
+    
+                        <div class="inputs-two">
+                            <div class="input-box">
+                                <label for="senha">Senha</label>
+                                <input id="senha" type="password" name="senha" placeholder="Digite sua senha" required>
+                            </div>
+    
+                            <div class="input-box">
+                                <label for="confirmSenha">Confirme a Senha</label>
+                                <input id="confirmSenha" type="password" name="confirmSenha" placeholder="Confirme sua senha" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button  type="submit" class="register-button">Cadastrar</button>
+                        <button class="login-button" onclick="window.location.href='../Login/index.html';">Fazer Login</button>
+
+                    </div>
+                </form>
+            </div>
+    
+            <div class="form-image">
+                <img src="img/img_cadastro.jpeg" alt="Imagem de cadastro">
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

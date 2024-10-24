@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://kit.fontawesome.com/a1f3395f52.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <nav class="navbar">
+
+        <div class="navbar-container">
+            <div class="navbar-left">
+                
+                <a href="#" class="menu-icons" id="notification-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+                
+                <div id="notification-overlay" class="overlay">
+                    <div class="popup">
+                        <h2>Notificações</h2>
+                        <p>Você tem novas notificações!</p>
+                        <button id="close-popup" class="close-btn">Fechar</button>
+                    </div>
+                </div>
+
+                    <input type="text" class="search-bar" placeholder="Pesquisar">
+                <div class="form-icons">
+
+                    <a href="#" class="menu-icons">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+
+                    <a href="../Reclamar/index.html" class="menu-icons">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </a>
+
+                    <a href="../Graficos/index.html" class="menu-icons">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </a>
+
+                </div>
+
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">NC</div>
+                <div class="user-details">
+                    <span class="username">Nann Cardoso</span>
+                    <span class="role">Professor</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h2>Reclamações</h2>
+        <div  id="postsContainer"></div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

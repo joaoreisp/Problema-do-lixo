@@ -96,7 +96,7 @@ def login():
         else:
             flash('E-mail ou senha incorretos', 'danger')  #
             return redirect(url_for('login'))
-    return render_template('login.html')
+    return render_template('Login/index.html')
        
        
 @app.route('/index', methods=['GET', 'POST'])

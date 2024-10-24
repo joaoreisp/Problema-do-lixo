@@ -5,7 +5,7 @@ from run import app
 @app.route('/')
 def indexuser():
    try:
-        return render_template('index.html')
+        return render_template('Login\index.html')
    except Exception as e:
         print(e)
         return render_template('error.html')

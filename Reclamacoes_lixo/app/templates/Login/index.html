@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/inputs-labels.css') }}">
+    <link rel="stylesheet" href="{{ url_for('templates', filename='Login/css/style.css') }}">
+
+
+    <title>Formulario de Cadastro</title>
+</head>
+
+<body>
+    <main>
+        <div class="register-container" id="register-container">
+            <div class="form-container">
+
+                <form class="form form-register" action="../Home_page/index.html">
+                    <div class="title-regs">
+                        <h2 class="form-header">Bem-vindo(a) de volta</h2>
+                        <p class="form-text">Preencha os campos abaixo</p>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-box">
+                            <label for="email">E-mail</label>
+                            <input id="email" type="email" name="email" placeholder="Digite seu e-mail" required>
+                        </div>
+
+                        <div class="input-box">
+                            <label for="senha">Senha</label>
+                            <input id="senha" type="password" name="senha" placeholder="Digite sua senha" required>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <a href="#">Esqueceu a senha?</a>
+                        <button class="login-button">Fazer Login</button>
+                        <p class="form-text form-text-baixo">Não tem uma conta? <a
+                                href="../Cadastro/index.html">Cadastre-se</a></p>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-image">
+                <img src="img/img_login.jpeg" alt="Imagem de cadastro">
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

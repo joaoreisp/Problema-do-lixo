@@ -1,0 +1,109 @@
+@media (max-width: 1710px) {
+    .register-container {
+        width: 65%; /* Ajusta a largura para telas menores */
+    }
+    
+    .form-container {
+        flex-direction: column; /* Muda a direção dos elementos, se necessário */
+    }
+    
+
+    .form {
+        width: 100%; /* O formulário ocupa a largura total */
+        padding: 24px 2rem; /* Reduz o padding para se ajustar melhor */
+    }
+
+    .form-image {
+        width: 60%; /* A imagem ocupa a largura total */
+
+    }
+}
+@media (max-width: 1710px) {
+    .input-box input {
+        padding: 0.7rem 1.8rem; /* Ajusta o padding para telas menores */
+    }
+}
+@media (max-width: 1366px) {
+    .register-container {
+        width: 70%; /* Aumenta a largura do container para preencher mais a tela */
+        height: 90hv;
+    }
+
+    .form {
+        width: 100%; /* O formulário ocupa a largura total */
+        padding: 24px 2rem; /* Reduz um pouco o padding para manter o espaçamento agradável */
+    }
+
+    .form-image {
+        width: 60%; /* A imagem ocupa a largura total */
+    }
+
+    .form-header {
+        font-size: 2rem; /* Reduz o tamanho do cabeçalho */
+    }
+
+    .input-box input {
+        padding: 0.7rem 1.6rem; /* Reduz o padding dos inputs para telas menores */
+    }
+
+    .register-button, .login-button {
+        width: 100%; /* Mantém os botões com largura total */
+        min-width: 10rem; /* Define uma largura mínima adequada para a tela */
+        font-size: 0.9rem; /* Ajusta o tamanho da fonte para botões */
+    }
+
+    .buttons {
+        gap: 15px; /* Reduz o espaçamento entre os botões */
+    }
+
+    .input-group {
+        margin-bottom: 8px; /* Diminui o espaçamento entre os grupos de inputs */
+    }
+
+    .input-box label {
+        font-size: 0.75rem; /* Reduz o tamanho do texto das labels */
+    }
+
+    .form-text {
+        font-size: 0.85rem; /* Reduz o tamanho do texto informativo */
+    }
+}
+
+@media screen and (max-width: 1330px) {
+    .form-image {
+        display: none;
+    }
+    .container {
+        width: 50%;
+    }
+    .form {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1064px) {
+    .register-container {
+        width: 90%; /* Mantém o container ocupando a maior parte da largura */
+        height: auto; /* Altura ajustada ao conteúdo */
+    }
+
+    .form {
+        width: 100%; /* O formulário ocupa a largura total */
+        padding: 16px 2rem; /* Reduz um pouco o padding para melhor ajuste */
+    }
+
+    .inputs-two {
+        display: flex;
+        gap: 10px; /* Ajusta o espaçamento entre os campos */
+        flex-wrap: wrap; /* Permite que os campos quebrem de linha se necessário */
+    }
+
+    .input-box {
+        width: 48%; /* Define uma largura menor para os inputs ficarem lado a lado */
+    }
+
+    .buttons {
+        gap: 15px; /* Ajusta o espaçamento entre os botões */
+    }
+}
+

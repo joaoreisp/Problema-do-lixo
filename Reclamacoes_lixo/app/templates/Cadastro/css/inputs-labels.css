@@ -1,0 +1,39 @@
+.input-group{
+    margin-bottom: 10px;
+}
+.inputs-two{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espaço entre os campos */
+}
+.input-box {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.6rem;
+}
+
+.input-box input {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 0.7rem;
+}
+
+.input-box input:hover {
+    background-color: #eeeeee75;
+}
+
+.input-box input:focus-visible {
+    outline: 1px solid #6c63ff;
+}
+
+.input-box label{
+    font-size: 0.80rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #000000c0;
+}
+
+.input-box input::placeholder {
+    color: #000000be;
+}

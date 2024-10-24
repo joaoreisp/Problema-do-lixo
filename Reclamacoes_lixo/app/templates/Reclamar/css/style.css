@@ -1,0 +1,140 @@
+.complaint-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-initials {
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-info .name {
+    font-weight: bold;
+}
+
+.profile-info .role {
+    color: #888;
+    font-size: 14px;
+}
+
+.form-fields {
+    margin-bottom: 20px;
+}
+
+.dropdowns {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+select, input[type="text"] {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 90px;
+}
+
+.complaint-content {
+    width: 100%;
+    height: 150px; 
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    overflow-y: auto; 
+    resize: vertical; 
+    max-width: 100%; 
+    font-size: 14px;
+}
+.complaint-content:empty:before {
+    content: attr(data-placeholder); 
+    color: #888; 
+    font-style: italic;
+}
+.complaint-content:focus {
+    outline: none; 
+    border: 1px solid #4f72ff; 
+}
+
+
+
+.textarea-navbar {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.icon-group-left {
+    display: flex;
+    gap: 10px; 
+}
+.icon-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.icon-btn:hover {
+    color: #4f72ff; 
+}
+
+.button-group-right {
+    display: flex;
+    gap: 10px; 
+}
+.publish-btn {
+    background-color: #4f72ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.publish-btn:hover {
+    background-color: #3e5dcc;
+}
+
+.clear-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.clear-btn:hover {
+    background-color: #e53935;
+}

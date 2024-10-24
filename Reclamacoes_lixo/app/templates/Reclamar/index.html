@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar reclamação</title>
+    <script src="https://kit.fontawesome.com/a1f3395f52.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    
+</head>
+<body>
+    <nav class="navbar">
+
+        <div class="navbar-container">
+            <div class="navbar-left">
+                
+                <a href="#" class="menu-icons" id="notification-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+                
+                <div id="notification-overlay" class="overlay">
+                    <div class="popup">
+                        <h2>Notificações</h2>
+                        <p>Você tem novas notificações!</p>
+                        <button id="close-popup" class="close-btn">Fechar</button>
+                    </div>
+                </div>
+                
+
+                    <input type="text" class="search-bar" placeholder="Pesquisar">
+                <div class="form-icons">
+
+                    <a href="../Home_page/index.html" class="menu-icons">
+                        <i class="fa-solid fa-house"></i>
+                    </a>
+
+                    <a href="#" class="menu-icons">
+                        <i class="fa-solid fa-comment-dots"></i>
+                    </a>
+
+                    <a href="../Graficos/index.html" class="menu-icons">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </a>
+
+                </div>
+
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">RR</div>
+                <div class="user-details">
+                    <span class="username">Rafael Rodrigues</span>
+                    <span class="role">Aluno</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="complaint-form">
+            <h2>Criar reclamação</h2>
+            <div class="user-profile">
+                <div class="profile-initials">RR</div>
+                <div class="profile-info">
+                    <span class="name">Rafael Rodrigues</span>
+                    <span class="role">Aluno</span>
+                </div>
+            </div>
+            <div class="form-fields">
+                <div class="dropdowns">
+                    <select id="sector">
+                        <option disabled selected>Setor reclamado</option>
+                        <option>Coleta de lixo</option>
+                        <option>Resíduos de construções</option>
+                        <option>Saneamento básico</option>
+                        <option>Descarte ilegal</option>
+                        <option>Meio ambiente</option>
+                        <option>Lixeiras e infraestrutura</option>
+                    </select>
+                    <select id="city">
+                        <option disabled selected>Cidade</option>
+                        <option>Alagoinhas</option>
+                        <option>Barreiras</option>
+                        <option>Camaçari</option>
+                        <option>Candeias</option>
+                        <option>Eunápolis</option>
+                        <option>Feira de Santana</option>
+                        <option>Guanambi</option>
+                        <option>Ilhéus</option>
+                        <option>Itabuna</option>
+                        <option>Jequié</option>
+                        <option>Juazeiro</option>
+                        <option>Lauro de Freitas</option>
+                        <option>Paulo Afonso</option>
+                        <option>Porto Seguro</option>
+                        <option>Salvador</option>
+                        <option>Santo Antônio de Jesus</option>
+                        <option>Simões Filho</option>
+                        <option>Teixeira de Freitas</option>
+                        <option>Valença</option>
+                        <option>Vitória da Conquista</option>
+                    </select>
+                    <input type="text" id="neighborhood" placeholder="Informe o bairro">
+                </div>
+                <div id="complaintContent" contenteditable="true" class="complaint-content" data-placeholder="Descreva a sua reclamação."></div>
+
+                <div class="textarea-navbar">
+
+                    <div class="icon-group-left">
+                        <button class="btn icon-btn" id="attachButton">
+                            <i class="fa-solid fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        <button class="btn icon-btn" id="emojiButton">
+                            <i class="fa-solid fa-face-smile"></i>
+                        </button>
+                    </div>
+
+                
+                    <div class="button-group-right">
+                        <button id="publishButton" class="btn publish-btn">Publicar</button>
+                        <button id="clearButton" class="btn clear-btn">Limpar</button>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
