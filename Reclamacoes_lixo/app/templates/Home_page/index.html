@@ -42,7 +42,7 @@
                         <i class="fa-solid fa-comment-dots"></i>
                     </a>
 
-                    <a href="../Graficos/index.html" class="menu-icons">
+                    <a href="/graficos" class="menu-icons">
                         <i class="fa-solid fa-chart-pie"></i>
                     </a>
 
@@ -50,19 +50,57 @@
 
             </div>
             <div class="user-info">
-                <div class="user-avatar">NC</div>
+                <div class="user-avatar">{{ session['nickname'] }}</div>
                 <div class="user-details">
-                    <span class="username">Nann Cardoso</span>
-                    <span class="role">Professor</span>
+                    <span class="username">{{ session['usuario_nome'] }}</span>
+                    <span class="role">{{ session['usuario_profissao'] }}</span>
                 </div>
             </div>
         </div>
     </nav>
     <div class="container">
         <h2>Reclamações</h2>
-        <div id="postsContainer"></div>
+        <div id="postsContainer">
+            {% for reclamacao in reclamacoes %}
+            <div class="complaint-post">
+                <div class="complaint-header">
+                    <span class="complaint-user">{{ reclamacao.usuario.nome }} {{ reclamacao.usuario.profissao
+                        }}</span><br>
+                    <span class="complaint-location">{{ reclamacao.bairro }} {{ reclamacao.data_atualizacao }}</span>
+                </div>
+                <div class="complaint-description">
+                    {{ reclamacao.descricao }}
+                </div>
+                <div class="complaint-sector">
+                    {% if reclamacao.anexo %}
+                    <img src="{{ url_for('static', filename=reclamacao.anexo) }}" alt="Anexo"
+                        style="max-width: 300px; height: auto;">
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% if not reclamacoes %}
+            <p>Sem reclamações para exibir.</p>
+            {% endif %}
+        </div>
+
     </div>
-    <script src="js/script.js"></script>
+    <script>
+        // Exibir o popup e o fundo preto ao clicar no ícone
+        document.getElementById('notification-icon').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevenir o comportamento padrão do link
+
+            // Exibir o overlay com o popup
+            document.getElementById('notification-overlay').style.display = 'flex';
+        });
+
+        // Fechar o popup ao clicar no botão "Fechar"
+        document.getElementById('close-popup').addEventListener('click', function () {
+            document.getElementById('notification-overlay').style.display = 'none';
+        });
+
+
+    </script>
 </body>
 
 </html>

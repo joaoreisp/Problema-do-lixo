@@ -13,10 +13,17 @@
 
 <body>
     <main>
+        <div id="alertBox" class="alert-box" style="display: none;">
+            <div class="alert-content">
+                <span id="alertMessage"></span>
+                <button onclick="document.getElementById('alertBox').style.display='none'"
+                    class="alert-button">OK</button>
+            </div>
+        </div>
+
         <div class="register-container" id="register-container">
             <div class="form-container">
-
-                <form class="form form-register" action="/cadastro" method="POST">
+                <form id="cadastroForm" class="form form-register" action="/cadastro" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="title-regs">
@@ -80,7 +87,7 @@
                     </div>
                     <div class="buttons">
                         <button type="submit" class="register-button">Cadastrar</button>
-                        <button class="login-button" onclick="window.location.href='/';">Fazer
+                        <button type="button" class="login-button" onclick="window.location.href='/';">Fazer
                             Login</button>
 
                     </div>
@@ -90,10 +97,49 @@
             <div class="form-image">
                 <img src="{{ url_for('static', filename='css/css_cadastro/img/img_cadastro.jpeg') }}"
                     alt="Imagem de cadastro">
-            </div>
 
-        </div>
+            </div>
+            <div id="alertButton" onclick="closeAlert()" class="alert-button">
+                <div class="alert-content">
+                    <span id="alertMessage"></span>
+                    <button onclick="closeAlert()" class="alert-button">OK</button>
+                </div>
     </main>
+    <script>
+        document.getElementById("cadastroForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch("/cadastro", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showAlert(data.error);
+                    } else {
+                        window.location.href = "/";
+                    }
+                })
+                .catch(error => {
+                    showAlert("Erro ao cadastrar usuário.");
+                    console.error("Erro:", error);
+                });
+        });
+
+        function showAlert(message) {
+            const alertBox = document.getElementById("alertBox");
+            const alertMessage = document.getElementById("alertMessage");
+            alertMessage.innerText = message;
+            alertBox.style.display = "block";
+
+            setTimeout(() => {
+                alertBox.style.display = "none";
+            }, 5000);
+        }
+    </script>
 </body>
 
 </html>

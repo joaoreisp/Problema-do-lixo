@@ -6,19 +6,18 @@ db = SQLAlchemy()
 # Modelo para a tabela 'usuarios'
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(255), nullable=False)
     sobrenome = db.Column(db.String(255), nullable=False)
     cidade = db.Column(db.String(255), nullable=False)
     bairro = db.Column(db.String(255), nullable=False)
     profissao = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True, nullable=False)
-    senha = db.Column(db.String(128), nullable=False)  # Senha hash
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    senha = db.Column(db.String(255), nullable=False)
+    data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-    # Relacionamento com a tabela 'reclamacoes'
-    reclamacoes = db.relationship('Reclamacao', backref='usuario', lazy=True)
+    # Relacionamento com Reclamacao usando back_populates
+    reclamacoes = db.relationship("Reclamacao", back_populates="usuario")
 
     def __repr__(self):
         return f'<Usuario {self.nome} {self.sobrenome}>'
@@ -27,18 +26,18 @@ class Usuario(db.Model):
 # Modelo para a tabela 'reclamacoes'
 class Reclamacao(db.Model):
     __tablename__ = 'reclamacoes'
-    
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
     tipo_reclamacao = db.Column(db.String(255), nullable=False)
-    
-    descricao = db.Column(db.String(255), nullable=False)
-    cidade = db.Column(db.String(100), nullable=False)
-    bairro = db.Column(db.String(100), nullable=False)
-    anexo = db.Column(db.String(255))  # Caminho do anexo
-    data_criacao = db.Column(db.TIMESTAMP, default=datetime.utcnow)
-    data_atualizacao = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    descricao = db.Column(db.Text, nullable=False)
+    cidade = db.Column(db.String(255), nullable=False)
+    bairro = db.Column(db.String(255), nullable=False)
+    anexo = db.Column(db.String(255), nullable=True)
+    status = db.Column(db.String(20), default='pendente')
+    data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())
+    data_atualizacao = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+    # Relacionamento com Usuario usando back_populates
+    usuario = db.relationship("Usuario", back_populates="reclamacoes")
     def __repr__(self):
         return f'<Reclamacao {self.descricao[:30]}...>'

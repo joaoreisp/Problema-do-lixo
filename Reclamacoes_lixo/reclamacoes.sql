@@ -19,22 +19,19 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS reclamacoes (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária
     usuario_id INT, -- Chave estrangeira referenciando a tabela usuarios
-    tipo_reclamacao_id INT NULL,
+    tipo_reclamacao VARCHAR(255) NOT NULL,
     descricao TEXT NOT NULL,
     cidade VARCHAR(255) NOT NULL, -- Cidade do usuário que fez a reclamação (FK)
     bairro VARCHAR(255) NOT NULL, -- Bairro do usuário que fez a reclamação (FK)
-    anexo VARCHAR(255), -- Indica se há anexo ou não
-    status VARCHAR(20) NULL DEFAULT 'pendente',
+    anexo VARCHAR(255) NULL, -- Indica se há anexo ou não
+    status VARCHAR(20) DEFAULT 'pendente',
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id), -- Chave estrangeira que refere a usuários
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    usuario = db.relationship("Usuario", backref="reclamacoes")
 );
 
--- Tabela tipo_reclamacao
-CREATE TABLE IF NOT EXISTS tipos_de_reclamacao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    tipo VARCHAR(100) NOT NULL
-);
 
 -- Tabela cidades
 CREATE TABLE IF NOT EXISTS cidades (
