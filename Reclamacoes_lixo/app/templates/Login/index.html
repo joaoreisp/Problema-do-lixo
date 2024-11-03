@@ -13,10 +13,17 @@
 
 <body>
     <main>
+        <div id="alertBox" class="alert-box" style="display: none;">
+            <div class="alert-content">
+                <span id="alertMessage"></span>
+                <button onclick="document.getElementById('alertBox').style.display='none'"
+                    class="alert-button">OK</button>
+            </div>
+        </div>
         <div class="register-container" id="register-container">
             <div class="form-container">
 
-                <form class="form form-register" action="/" method="POST">
+                <form id="loginForm" class="form form-register" action="/" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="title-regs">
                         <h2 class="form-header">Bem-vindo(a) de volta</h2>
@@ -35,7 +42,7 @@
                     </div>
                     <div class="buttons">
                         <a href="#">Esqueceu a senha?</a>
-                        <button class="login-button">Fazer Login</button>
+                        <button type="submit" class="login-button">Fazer Login</button>
                         <p class="form-text form-text-baixo">Não tem uma conta? <a
                                 href="{{ url_for('user.cadastrar_usuario') }}">Cadastre-se</a></p>
                     </div>
@@ -48,7 +55,52 @@
             </div>
 
         </div>
+
+        
     </main>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch("/", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    } else {
+                        throw new Error("Resposta não é JSON.");
+                    }
+                })
+                .then(data => {
+                    if (data.error) {
+                        showAlert(data.error);
+                    } else {
+                        window.location.href = "/reclamacoes";
+                    }
+                })
+                .catch(error => {
+                    showAlert("Erro ao processar o login.");
+
+                });
+        });
+
+        function showAlert(message) {
+            const alertBox = document.getElementById("alertBox");
+            const alertMessage = document.getElementById("alertMessage");
+            alertMessage.innerText = message;
+            alertBox.style.display = "block";
+
+            setTimeout(() => {
+                alertBox.style.display = "none";
+            }, 3000);
+        }
+
+    </script>
 </body>
 
 </html>

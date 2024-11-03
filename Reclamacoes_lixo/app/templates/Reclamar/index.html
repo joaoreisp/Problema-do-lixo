@@ -31,7 +31,8 @@
                 </div>
 
 
-                <input type="text" class="search-bar" placeholder="Pesquisar">
+                <input type="text" class="search-bar" id="search-input" placeholder="Pesquisar">
+
                 <div class="form-icons">
 
                     <a href="/reclamacoes" class="menu-icons">
@@ -88,9 +89,8 @@
                         <label for="cep">CEP:</label>
                         <input type="text" id="cep" name="cep" required>
                         <button type="button" id="buscar-cep">Buscar</button>
-                        <!-- Campos ocultos para cidade e bairro -->
-                        <input type="hidden" id="city" name="city">
-                        <input type="hidden" id="neighborhood" name="neighborhood">
+                        <input id="city" name="city" readonly>
+                        <input id="neighborhood" name="neighborhood" readonly>
 
                     </div>
                     <div id="complaintContent">
@@ -114,7 +114,7 @@
 
                         <div class="button-group-right">
                             <button type="submit" id="publishButton" class="btn publish-btn">Publicar</button>
-                            <button id="clearButton" class="btn clear-btn">Limpar</button>
+                            <button type="reset" id="clearButton" class="btn clear-btn">Limpar</button>
                         </div>
                     </div>
                 </div>
@@ -126,19 +126,19 @@
 
         function buscarCEP(callback) {
             var cep = document.getElementById('cep').value.replace(/\D/g, '');
+
             if (cep.length === 8) {
                 fetch(`https://viacep.com.br/ws/${cep}/json/`)
                     .then(response => response.json())
                     .then(data => {
+
                         if (!data.erro) {
                             const cidade = data.localidade;
                             const bairro = data.bairro;
 
-                            // Atualiza os campos ocultos com cidade e bairro
+                            // Atualiza os campos cidade e bairro
                             document.getElementById('city').value = cidade;
                             document.getElementById('neighborhood').value = bairro;
-
-                            console.log(`Cidade: ${cidade}, Bairro: ${bairro}`);
 
                             // Verifica se o callback foi passado e executa, caso exista
                             if (typeof callback === "function") {
@@ -152,7 +152,6 @@
                         }
                     })
                     .catch(error => {
-                        console.error('Erro ao buscar CEP:', error);
                         alert('Erro ao buscar CEP.');
                         if (typeof callback === "function") {
                             callback(false);
@@ -166,40 +165,42 @@
             }
         }
 
-        // Intercepta o envio do formulário
-        document.querySelector('form').addEventListener('submit', function (event) {
-            // Verifica se um arquivo foi selecionado no campo de anexo
-            const fileInput = document.getElementById("fileInput");
 
-            // Se não houver arquivo anexado, impede o envio do formulário
+        document.querySelector('form').addEventListener('submit', function (event) {
+
+            const fileInput = document.getElementById("fileInput");
+            const sector = document.getElementById('sector').value;
+
             if (!fileInput.files.length) {
+                console.log("Nenhum arquivo anexado.");
                 alert("Por favor, anexe um arquivo antes de enviar.");
                 event.preventDefault();
                 return;
             }
 
-            // Verifica se os campos de cidade e bairro já estão preenchidos
+            if (sector === "Setor reclamado") {
+                console.log("Setor não selecionado.");
+                alert("Por favor, selecione o setor.");
+                event.preventDefault();
+                return;
+            }
+
             const cityField = document.getElementById('city');
             const neighborhoodField = document.getElementById('neighborhood');
 
-            // Se os campos de cidade ou bairro não estão preenchidos
             if (!cityField.value || !neighborhoodField.value) {
-                // Previne o envio e realiza a busca de CEP
+                console.log("Cidade ou bairro não preenchido, buscando CEP...");
                 event.preventDefault();
                 buscarCEP(function (success) {
                     if (success) {
-                        // Após a busca bem-sucedida, verifica novamente se os campos estão preenchidos
                         if (cityField.value && neighborhoodField.value) {
-                            // Reenvia o formulário após a busca bem-sucedida
                             document.querySelector('form').submit();
                         }
                     }
                 });
-            } else {
-                // Se os campos de cidade e bairro já estão preenchidos, permite o envio
-                // (Aqui você pode adicionar a lógica para coletar dados do formulário se necessário)
             }
         });
+
 
 
 
@@ -221,7 +222,9 @@
         const complaintContent = document.getElementById("complaintContent");
 
         clearButton.addEventListener("click", function () {
-            complaintContent.innerHTML = "";
+            // Remove todas as imagens dentro de complaintContent, mantendo o contêiner intacto
+            const images = complaintContent.querySelectorAll("img");
+            images.forEach((img) => img.remove());
         });
 
         // Função para selecionar a imagem ao clicar no ícone de anexar
@@ -256,48 +259,50 @@
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const publishButton = document.getElementById("publishButton");
-            if (publishButton) {
-                publishButton.addEventListener("click", function () {
-                    // Captura os dados do formulário
-                    const sector = document.getElementById("sector").value;
-                    const complaintContent = document.getElementById("complaintContent").innerText;
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     const publishButton = document.getElementById("publishButton");
+        //     if (publishButton) {
+        //         publishButton.addEventListener("click", function () {
+        //             // Captura os dados do formulário
+        //             const sector = document.getElementById("sector").value;
+        //             const complaintContent = document.getElementById("complaintContent").innerText;
 
-                    console.log("Setor:", sector);
-                    console.log("Cidade:", city);
-                    console.log("Bairro:", neighborhood);
-                    console.log("Conteúdo da Reclamação:", complaintContent);
+        //             console.log("Setor:", sector);
+        //             console.log("Cidade:", city);
+        //             console.log("Bairro:", neighborhood);
+        //             console.log("Conteúdo da Reclamação:", complaintContent);
 
-                    if (sector && complaintContent &&
-                        sector !== "Setor reclamado" && city !== "Cidade") {
-                        // Cria um objeto para armazenar os dados
-                        const complaint = {
-                            sector: sector,
-                            content: complaintContent,
-                            user: "Rafael Rodrigues",  // Exemplo, você pode personalizar
-                            role: "Aluno"  // Exemplo, você pode personalizar
-                        };
+        //             if (sector && complaintContent &&
+        //                 sector !== "Setor reclamado") {
+        //                 // Cria um objeto para armazenar os dados
+        //                 const complaint = {
+        //                     sector: sector,
+        //                     content: complaintContent,
+        //                     user: "Rafael Rodrigues",  // Exemplo, você pode personalizar
+        //                     role: "Aluno"  // Exemplo, você pode personalizar
+        //                 };
 
-                        // Recupera as reclamações existentes no localStorage
-                        let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+        //                 // Recupera as reclamações existentes no localStorage
+        //                 let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
 
-                        // Adiciona a nova reclamação à lista
-                        complaints.push(complaint);
+        //                 // Adiciona a nova reclamação à lista
+        //                 complaints.push(complaint);
 
-                        // Armazena a lista de reclamações no localStorage
-                        localStorage.setItem("complaints", JSON.stringify(complaints));
+        //                 // Armazena a lista de reclamações no localStorage
+        //                 localStorage.setItem("complaints", JSON.stringify(complaints));
 
-                        // Redireciona para a página Home
-                        window.location.href = "/";
-                    } else {
-                        alert("Por favor, preencha todos os campos.");
-                    }
-                });
-            } else {
-                console.error("O botão de publicação não foi encontrado.");
-            }
-        });
+        //                 // Redireciona para a página Home
+        //                 window.location.href = "/reclamacoes";
+        //             } else {
+        //                 alert("Por favor, preencha todos os campos.");
+        //             }
+        //         });
+        //     } else {
+        //         console.error("O botão de publicação não foi encontrado.");
+        //     }
+        // });
+
+
     </script>
 </body>
 

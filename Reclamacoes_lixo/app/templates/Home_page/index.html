@@ -31,7 +31,8 @@
                     </div>
                 </div>
 
-                <input type="text" class="search-bar" placeholder="Pesquisar">
+                <input type="text" class="search-bar" placeholder="Pesquisar" oninput="searchReclamacoes()"
+                    id="searchInput">
                 <div class="form-icons">
 
                     <a href="#" class="menu-icons">
@@ -66,7 +67,10 @@
                 <div class="complaint-header">
                     <span class="complaint-user">{{ reclamacao.usuario.nome }} {{ reclamacao.usuario.profissao
                         }}</span><br>
-                    <span class="complaint-location">{{ reclamacao.bairro }} {{ reclamacao.data_atualizacao }}</span>
+                    <span class="complaint-location">{{ reclamacao.bairro }} {{
+                        reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y') }}</span>
+
+
                 </div>
                 <div class="complaint-description">
                     {{ reclamacao.descricao }}
@@ -98,7 +102,48 @@
         document.getElementById('close-popup').addEventListener('click', function () {
             document.getElementById('notification-overlay').style.display = 'none';
         });
+        function searchReclamacoes() {
+            const searchQuery = document.getElementById('searchInput').value;
+            window.location.href = `/reclamacoes?search=${encodeURIComponent(searchQuery)}`;
+        }
 
+        // Função para realizar a busca usando AJAX
+        function searchReclamacoes() {
+            const searchQuery = document.getElementById('searchInput').value;
+
+            // Realiza uma requisição AJAX usando fetch
+            fetch(`/buscar_reclamacoes?search=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const postsContainer = document.getElementById('postsContainer');
+                    postsContainer.innerHTML = ''; // Limpa os resultados anteriores
+
+                    // Se não houver dados, exibe uma mensagem
+                    if (data.length === 0) {
+                        postsContainer.innerHTML = '<p>Sem reclamações para exibir.</p>';
+                        return;
+                    }
+
+                    // Cria o HTML para cada reclamação
+                    data.forEach(reclamacao => {
+                        const post = document.createElement('div');
+                        post.classList.add('complaint-post');
+
+                        post.innerHTML = `
+                        <div class="complaint-header">
+                            <span class="complaint-user">${reclamacao.usuario}</span><br>
+                            <span class="complaint-location">${reclamacao.bairro} ${reclamacao.data_atualizacao}</span>
+                        </div>
+                        <div class="complaint-description">${reclamacao.descricao}</div>
+                        <div class="complaint-sector">
+                            ${reclamacao.anexo ? `<img src="/static/${reclamacao.anexo}" alt="Anexo" style="max-width: 300px; height: auto;">` : ''}
+                        </div>
+                    `;
+                        postsContainer.appendChild(post);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar reclamações:', error));
+        }
 
     </script>
 </body>

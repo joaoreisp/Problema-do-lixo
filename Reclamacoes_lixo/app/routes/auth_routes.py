@@ -1,5 +1,5 @@
 # app/routes/auth_routes.py
-from flask import Blueprint, render_template, redirect, url_for, request, session, flash
+from flask import Blueprint, render_template, redirect, url_for, request, session, flash, jsonify
 from werkzeug.security import check_password_hash
 from app.models import Usuario
 
@@ -14,10 +14,9 @@ def login():
         if usuario and check_password_hash(usuario.senha, senha):
             session['usuario_id'] = usuario.id
             session['usuario_nome'] = usuario.nome
-            return redirect(url_for('reclamacao.listar_reclamacoes'))
+            return jsonify({"success": True}), 200
         else:
-            flash('E-mail ou senha incorretos', 'danger')
-            return redirect(url_for('auth.login'))
+            return jsonify({"error": "E-mail ou senha incorreto"}), 400
     return render_template('Login/index.html')
 
 @auth_bp.route('/logout')

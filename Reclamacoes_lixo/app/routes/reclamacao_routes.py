@@ -1,6 +1,7 @@
-from flask import Blueprint, current_app, render_template, request, session, flash, redirect, url_for
+from flask import Blueprint, current_app, render_template, request, session, flash, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 from app.models import db, Reclamacao, Usuario
+from dateutil import parser
 import os
 
 reclamacao_bp = Blueprint('reclamacao', __name__)
@@ -30,8 +31,6 @@ def criar_reclamacao():
             cidade = request.form.get('city')
             bairro = request.form.get('neighborhood')
             descricao = request.form.get('description')
-            
-            print(tipo_reclamacao, cidade, bairro, descricao, session)
 
             # Obtenha o usuário logado
             id_usuario = session.get('usuario_id')
@@ -84,7 +83,6 @@ def criar_reclamacao():
 
     return render_template('Reclamar/index.html', usuarios=usuarios)
 
-
 @reclamacao_bp.route('/reclamacoes', methods=['GET'])
 def listar_reclamacoes():
     try:
@@ -93,8 +91,41 @@ def listar_reclamacoes():
         
         for reclamacao in reclamacoes:
             reclamacao.anexo = str(reclamacao.anexo) if reclamacao.anexo else None
+            if isinstance(reclamacao.data_atualizacao, str):
+                reclamacao.data_atualizacao = parser.parse(reclamacao.data_atualizacao)  # Converte a string para datetime
 
         return render_template('Home_page/index.html', usuarios=usuarios, reclamacoes=reclamacoes)
     except Exception as e:
         print(f"Erro ao buscar os dados: {str(e)}")
         return "Houve um erro ao buscar os dados", 500
+
+@reclamacao_bp.route('/buscar_reclamacoes', methods=['GET'])
+def buscar_reclamacoes():
+    try:
+        search_query = request.args.get('search', '').strip()
+
+        reclamacoes_query = Reclamacao.query
+
+        if search_query:
+            reclamacoes_query = reclamacoes_query.filter(
+                (Reclamacao.cidade.ilike(f"%{search_query}%")) |
+                (Reclamacao.bairro.ilike(f"%{search_query}%")) |
+                (Reclamacao.tipo_reclamacao.ilike(f"%{search_query}%"))
+            )
+
+        reclamacoes = reclamacoes_query.all()
+        reclamacoes_data = [
+            {
+                'usuario': f"{reclamacao.usuario.nome} {reclamacao.usuario.profissao}",
+                'bairro': reclamacao.bairro,
+                'data_atualizacao': reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y'),
+                'descricao': reclamacao.descricao,
+                'anexo': reclamacao.anexo
+            }
+            for reclamacao in reclamacoes
+        ]
+
+        return jsonify(reclamacoes_data)
+    except Exception as e:
+        print(f"Erro ao buscar os dados: {str(e)}")
+        return jsonify({"error": "Houve um erro ao buscar os dados"}), 500
