@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_cadastro/inputs-labels.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_cadastro/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_cadastro/midia.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <title>Formulario de Cadastro</title>
 </head>
 
@@ -48,15 +49,26 @@
                         </div>
 
                         <div class="inputs-two">
+                            <div class="input-box">
+                                <label for="cep">CEP:</label>
+                                <input type="text" id="cep" name="cep" required>
+                            </div>
+                            <div class="input-box">
+                                <button type="button" id="buscar-cep">Buscar</button>
+                            </div>
+                        </div>
+
+                        <div class="inputs-two">
+
 
                             <div class="input-box">
                                 <label for="cidade">Cidade</label>
-                                <input id="cidade" type="text" name="cidade" placeholder="Digite sua cidade" required>
+                                <input id="cidade" type="text" name="cidade" readonly>
                             </div>
 
                             <div class="input-box">
                                 <label for="bairro">Bairro</label>
-                                <input id="bairro" type="text" name="bairro" placeholder="Digite seu bairro" required>
+                                <input id="bairro" type="text" name="bairro" readonly>
                             </div>
 
                         </div>
@@ -75,14 +87,23 @@
                         <div class="inputs-two">
                             <div class="input-box">
                                 <label for="senha">Senha</label>
-                                <input id="senha" type="password" name="senha" placeholder="Digite sua senha" required>
+                                <div class="password-wrapper">
+                                    <input id="senha" type="password" name="senha" placeholder="Digite sua senha"
+                                        required>
+                                    <i class="bi bi-eye-fill" id="btn-senha" onclick="mostrarSenha()"></i>
+                                </div>
                             </div>
+
 
                             <div class="input-box">
                                 <label for="confirmSenha">Confirme a Senha</label>
-                                <input id="confirmSenha" type="password" name="confirmSenha"
-                                    placeholder="Confirme sua senha" required>
+                                <div class="password-wrapper">
+                                    <input id="confirmSenha" type="password" name="confirmSenha"
+                                        placeholder="Confirme sua senha" required>
+                                    <i class="bi bi-eye-fill" id="btn-confirmSenha" onclick="mostrarConfirmSenha()"></i>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                     <div class="buttons">
@@ -133,6 +154,74 @@
             setTimeout(() => {
                 alertBox.style.display = "none";
             }, 3000);
+        }
+
+        function mostrarSenha() {
+            var inputPass = document.getElementById("senha")
+            var btnShowPass = document.getElementById("btn-senha")
+
+            if (inputPass.type === "password") {
+                inputPass.setAttribute("type", "text")
+                btnShowPass.classList.replace("bi-eye-fill", "bi-eye-slash-fill")
+            } else {
+                inputPass.setAttribute("type", "password")
+                btnShowPass.classList.replace("bi-eye-slash-fill", "bi-eye-fill")
+            }
+        }
+        function mostrarConfirmSenha() {
+            var inputPass = document.getElementById("confirmSenha");
+            var btnShowPass = document.getElementById("btn-confirmSenha");
+
+            if (inputPass.type === "password") {
+                inputPass.setAttribute("type", "text");
+                btnShowPass.classList.replace("bi-eye-fill", "bi-eye-slash-fill");
+            } else {
+                inputPass.setAttribute("type", "password");
+                btnShowPass.classList.replace("bi-eye-slash-fill", "bi-eye-fill");
+            }
+        }
+
+        document.getElementById('buscar-cep').onclick = () => buscarCEP();
+
+        function buscarCEP(callback) {
+            var cep = document.getElementById('cep').value.replace(/\D/g, '');
+
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        if (!data.erro) {
+                            const cidade = data.localidade;
+                            const bairro = data.bairro;
+
+                            // Atualiza os campos cidade e bairro
+                            document.getElementById('cidade').value = cidade;
+                            document.getElementById('bairro').value = bairro;
+
+                            // Verifica se o callback foi passado e executa, caso exista
+                            if (typeof callback === "function") {
+                                callback(true);
+                            }
+                        } else {
+                            alert('CEP não encontrado.');
+                            if (typeof callback === "function") {
+                                callback(false);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        alert('Erro ao buscar CEP.');
+                        if (typeof callback === "function") {
+                            callback(false);
+                        }
+                    });
+            } else {
+                alert('Por favor, insira um CEP válido.');
+                if (typeof callback === "function") {
+                    callback(false);
+                }
+            }
         }
     </script>
 </body>

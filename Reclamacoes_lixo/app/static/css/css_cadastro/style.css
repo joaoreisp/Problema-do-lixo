@@ -94,3 +94,21 @@
     font-weight: bold;
     margin-left: 20px;
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 30px; /* Adicione espaço para o ícone */
+}
+
+.password-wrapper i {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #666; /* Cor do ícone, pode ser ajustada */
+}

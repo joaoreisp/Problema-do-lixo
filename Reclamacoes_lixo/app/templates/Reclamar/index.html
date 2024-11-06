@@ -102,12 +102,9 @@
                     <div class="textarea-navbar">
 
                         <div class="icon-group-left">
+                            <input type="file" id="fileInput" name="anexo" accept="image/*" style="display: none;">
                             <button class="btn icon-btn" id="attachButton">
                                 <i class="fa-solid fa-paperclip"></i>
-                            </button>
-                            <input type="file" id="fileInput" name="anexo" accept="image/*" style="display: none;">
-                            <button class="btn icon-btn" id="emojiButton">
-                                <i class="fa-solid fa-face-smile"></i>
                             </button>
                         </div>
 
@@ -245,7 +242,7 @@
             reader.onload = function (e) {
                 const image = document.createElement("img");
                 image.src = e.target.result;
-                image.style.maxWidth = "100%";
+                image.style.maxWidth = "250px";
                 image.style.height = "auto";
 
                 complaintContent.appendChild(image);

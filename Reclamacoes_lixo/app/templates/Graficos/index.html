@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graficos</title>
+    <title>Gráficos</title>
     <script src="https://kit.fontawesome.com/a1f3395f52.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_graficos/reset.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/css_graficos/navbar.css') }}">
@@ -13,10 +13,8 @@
 
 <body>
     <nav class="navbar">
-
         <div class="navbar-container">
             <div class="navbar-left">
-
                 <a href="#" class="menu-icons" id="notification-icon">
                     <i class="fa-solid fa-bell"></i>
                 </a>
@@ -31,21 +29,16 @@
 
                 <input type="text" class="search-bar" placeholder="Pesquisar">
                 <div class="form-icons">
-
                     <a href="/reclamacoes" class="menu-icons">
                         <i class="fa-solid fa-house"></i>
                     </a>
-
                     <a href="/index" class="menu-icons">
                         <i class="fa-solid fa-comment-dots"></i>
                     </a>
-
                     <a href="#" class="menu-icons">
                         <i class="fa-solid fa-chart-pie"></i>
                     </a>
-
                 </div>
-
             </div>
             <div class="user-info">
                 <div class="user-avatar">{{ session['nickname'] }}</div>
@@ -59,6 +52,20 @@
 
     <div class="container">
         <h1>Taxa de resoluções em {{ user_city }}</h1>
+
+        <!-- Dropdown de seleção de cidade -->
+        <form method="get" action="{{ url_for('grafico.exibir_graficos') }}">
+            <label for="cidade-select">Selecione a cidade:</label>
+            <select name="cidade" onchange="this.form.submit()">
+                {% for cidade in cidades %}
+                <option value="{{ cidade }}" {% if cidade==user_city %}selected{% endif %}>
+                    {{ cidade }}
+                </option>
+                {% endfor %}
+            </select>
+
+        </form>
+
         <div class="cards">
             {% for complaint in complaint_data %}
             <div class="card">
@@ -73,9 +80,8 @@
         </div>
     </div>
 
-
-    </div>
-    <script>// Exibir o popup e o fundo preto ao clicar no ícone
+    <script>
+        // Exibir o popup e o fundo preto ao clicar no ícone
         document.getElementById('notification-icon').addEventListener('click', function (event) {
             event.preventDefault(); // Prevenir o comportamento padrão do link
 

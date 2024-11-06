@@ -102,10 +102,6 @@
         document.getElementById('close-popup').addEventListener('click', function () {
             document.getElementById('notification-overlay').style.display = 'none';
         });
-        function searchReclamacoes() {
-            const searchQuery = document.getElementById('searchInput').value;
-            window.location.href = `/reclamacoes?search=${encodeURIComponent(searchQuery)}`;
-        }
 
         // Função para realizar a busca usando AJAX
         function searchReclamacoes() {

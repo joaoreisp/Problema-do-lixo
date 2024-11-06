@@ -23,7 +23,7 @@
         <div class="register-container" id="register-container">
             <div class="form-container">
 
-                <form id="loginForm" class="form form-register" action="/" method="POST">
+                <form id="loginForm" name="loginForm" class="form form-register" action="/" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="title-regs">
                         <h2 class="form-header">Bem-vindo(a) de volta</h2>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="buttons">
-                        <a href="#">Esqueceu a senha?</a>
+                        <a href="{{ url_for('auth.redefinir_senha') }}">Esqueceu a senha?</a>
                         <button type="submit" class="login-button">Fazer Login</button>
                         <p class="form-text form-text-baixo">Não tem uma conta? <a
                                 href="{{ url_for('user.cadastrar_usuario') }}">Cadastre-se</a></p>
