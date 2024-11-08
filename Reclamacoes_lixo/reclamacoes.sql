@@ -47,3 +47,19 @@ CREATE TABLE IF NOT EXISTS bairros (
     cidade_id INT NOT NULL,
     FOREIGN KEY (cidade_id) REFERENCES cidades(id)
 );
+
+CREATE TABLE reclamacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    tipo_reclamacao VARCHAR(255) NOT NULL,
+    descricao TEXT NOT NULL,
+    cidade VARCHAR(255) NOT NULL,
+    bairro VARCHAR(255) NOT NULL,
+    anexo VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'pendente',
+    anonimo BOOLEAN DEFAULT FALSE,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+

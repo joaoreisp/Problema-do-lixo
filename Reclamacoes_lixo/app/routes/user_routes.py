@@ -9,7 +9,7 @@ user_bp = Blueprint('user', __name__)
 def cadastrar_usuario():
     if request.method == 'POST':
         nome = request.form['nome']
-        sobrenome = request.form.get('sobrenome', '')  # Mudança aqui
+        sobrenome = request.form.get('sobrenome', '')  
         cidade = request.form['cidade']
         bairro = request.form['bairro']
         profissao = request.form['profissao']
@@ -22,11 +22,11 @@ def cadastrar_usuario():
         
         if Usuario.query.filter_by(email=email).first():
             return jsonify({"error": "E-mail já cadastrado"}), 400
-
+        
         senha_hash = generate_password_hash(senha)
         novo_usuario = Usuario(
             nome=nome,
-            sobrenome=sobrenome,  # Atribuição aqui
+            sobrenome=sobrenome,  
             cidade=cidade,
             bairro=bairro,
             profissao=profissao,
@@ -34,7 +34,6 @@ def cadastrar_usuario():
             senha=senha_hash
         )
 
-        
         try:
             db.session.add(novo_usuario)
             db.session.commit()
@@ -43,6 +42,4 @@ def cadastrar_usuario():
             db.session.rollback()
             print(f"Erro ao salvar os dados: {str(e)}")
             return jsonify({"error": "Houve um erro ao salvar os dados"}), 500
-
-    
     return render_template('Cadastro/index.html')

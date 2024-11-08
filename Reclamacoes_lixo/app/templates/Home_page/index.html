@@ -65,11 +65,15 @@
             {% for reclamacao in reclamacoes %}
             <div class="complaint-post">
                 <div class="complaint-header">
+                    {%if not reclamacao.anonimo %}
                     <span class="complaint-user">{{ reclamacao.usuario.nome }} {{ reclamacao.usuario.profissao
                         }}</span><br>
                     <span class="complaint-location">{{ reclamacao.bairro }} {{
                         reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y') }}</span>
-
+                    {%else%}
+                    <span class="complaint-user">Anônimo</span><br>
+                    <span class="complaint-location">Localização Anônima</span>
+                    {% endif%}          
 
                 </div>
                 <div class="complaint-description">

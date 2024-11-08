@@ -31,7 +31,7 @@ def criar_reclamacao():
             cidade = request.form.get('city')
             bairro = request.form.get('neighborhood')
             descricao = request.form.get('description')
-
+            anonimo = request.form.get('anonimo') == 'on' 
             # Obtenha o usuário logado
             id_usuario = session.get('usuario_id')
             if not id_usuario:
@@ -64,7 +64,8 @@ def criar_reclamacao():
                     cidade=cidade,
                     bairro=bairro,
                     anexo=relative_filepath,
-                    usuario_id=id_usuario
+                    usuario_id=id_usuario,
+                    anonimo=anonimo
                 )
 
 

@@ -30,6 +30,8 @@ class Reclamacao(db.Model):
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
     tipo_reclamacao = db.Column(db.String(255), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
+    anonimo = db.Column(db.Boolean, default=False)
+
     cidade = db.Column(db.String(255), nullable=False)
     bairro = db.Column(db.String(255), nullable=False)
     anexo = db.Column(db.String(255), nullable=True)
