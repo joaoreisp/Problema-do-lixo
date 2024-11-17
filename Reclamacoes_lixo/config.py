@@ -3,7 +3,7 @@
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'stockflow')  
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'sistema_lixo')  
     SQLALCHEMY_DATABASE_URI = (
         '{dbms}://{username}:{password}@{server}:{port}/{database}'.format(
             dbms='mysql+mysqlconnector',

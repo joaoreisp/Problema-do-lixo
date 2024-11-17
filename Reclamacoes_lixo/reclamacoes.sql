@@ -5,6 +5,7 @@ USE sistema_reclamacoes;
 -- Tabela usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária
+    administrador BOOLEAN DEFAULT FALSE,
     nome VARCHAR(255) NOT NULL,
     sobrenome VARCHAR(255) NOT NULL,
     cidade VARCHAR(255) NOT NULL,
@@ -58,8 +59,17 @@ CREATE TABLE reclamacoes (
     anexo VARCHAR(255),
     status VARCHAR(20) DEFAULT 'pendente',
     anonimo BOOLEAN DEFAULT FALSE,
+    estado BOOLEAN DEFAULT FALSE, 
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
+CREATE TABLE resolucoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reclamacao_id INT NOT NULL,
+    descricao TEXT NOT NULL,
+    responsavel VARCHAR(255) NOT NULL,
+    data_resolucao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reclamacao_id) REFERENCES reclamacoes(id) ON DELETE CASCADE
+);

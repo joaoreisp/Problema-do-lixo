@@ -42,5 +42,6 @@ def create_app():
                 session['usuario_profissao'] = usuario.profissao
                 session['usuario_cidade'] = usuario.cidade
                 session['nickname'] = f"{usuario.nome[0]}{usuario.sobrenome[0]}"
+                session['administrador']= usuario.administrador
 
     return app

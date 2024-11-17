@@ -1,0 +1,64 @@
+/* Contêiner para as mensagens flash */
+.flashes {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    width: 300px;
+    max-width: 100%;
+}
+
+/* Estilo para cada tipo de mensagem */
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+/* Alerta de sucesso */
+.alert-success {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #218838;
+}
+
+/* Alerta de erro */
+.alert-danger {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #c82333;
+}
+
+/* Alerta de advertência */
+.alert-warning {
+    background-color: #ffc107;
+    color: black;
+    border: 1px solid #e0a800;
+}
+
+/* Alerta de informação */
+.alert-info {
+    background-color: #17a2b8;
+    color: white;
+    border: 1px solid #117a8b;
+}
+
+/* Animação para exibição das mensagens */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Estilo para quando a página é redirecionada, escondendo as mensagens */
+.alert.hide {
+    display: none;
+}

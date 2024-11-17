@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, render_template, request, session, flash, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
-from app.models import db, Reclamacao, Usuario
+from app.models import db, Reclamacao, Usuario, Resolucao
 from dateutil import parser
 import os
 
@@ -21,8 +21,6 @@ if not os.path.exists(UPLOAD_FOLDER):
 @reclamacao_bp.route('/index', methods=['GET', 'POST'])
 def criar_reclamacao():
     usuarios = Usuario.query.all()
-
-
     if request.method == 'POST':
         
         try:
@@ -130,3 +128,56 @@ def buscar_reclamacoes():
     except Exception as e:
         print(f"Erro ao buscar os dados: {str(e)}")
         return jsonify({"error": "Houve um erro ao buscar os dados"}), 500
+    
+@reclamacao_bp.route('/resolver_reclamacao', methods=['POST'])
+def resolver_reclamacao():
+    reclamacao_id = request.form.get('reclamacao_id')
+    descricao = request.form.get('resolucao')
+    responsavel = request.form.get('responsavel')
+
+    try:
+        # Verifica se a reclamação já existe
+        reclamacao_existente = Reclamacao.query.filter_by(id=reclamacao_id).first()
+        if reclamacao_existente:
+            flash("Reclamação já existente", 'warning')  # Mensagem de advertência
+            return redirect(url_for('reclamacao.listar_reclamacoes'))  # Redireciona para a lista de reclamações
+
+        # Verifica se os campos obrigatórios foram preenchidos
+        if not reclamacao_id:
+            flash("Faltando o ID da reclamação", 'danger')  # Mensagem de erro
+            return redirect(url_for('reclamacao.listar_reclamacoes'))
+        if not descricao:
+            flash("Faltando a descrição", 'danger')  # Mensagem de erro
+            return redirect(url_for('reclamacao.listar_reclamacoes'))
+        if not responsavel:
+            flash("Faltando o responsável", 'danger')  # Mensagem de erro
+            return redirect(url_for('reclamacao.listar_reclamacoes'))
+
+        # Buscar a reclamação no banco
+        reclamacao = Reclamacao.query.filter_by(id=reclamacao_id).first()
+
+        if not reclamacao:
+            flash("Reclamação não encontrada", 'danger')  # Mensagem de erro
+            return redirect(url_for('reclamacao.listar_reclamacoes'))
+
+        # Criar resolução
+        resolucao = Resolucao(
+            reclamacao_id=reclamacao_id,
+            descricao=descricao,
+            responsavel=responsavel
+        )
+
+        # Atualizar estado da reclamação para "resolvida"
+        reclamacao.estado = 1
+
+        # Adicionar a resolução e a atualização no banco
+        db.session.add(resolucao)
+        db.session.commit()
+
+        flash("Reclamação resolvida com sucesso", 'success')  # Mensagem de sucesso
+        return redirect(url_for('reclamacao.listar_reclamacoes'))  # Redireciona para a lista de reclamações
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erro ao resolver reclamação: {str(e)}", 'danger')  # Mensagem de erro
+        return redirect(url_for('reclamacao.listar_reclamacoes'))  # Redireciona em caso de erro
