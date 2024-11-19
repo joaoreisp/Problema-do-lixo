@@ -93,10 +93,22 @@ def listar_reclamacoes():
             if isinstance(reclamacao.data_atualizacao, str):
                 reclamacao.data_atualizacao = parser.parse(reclamacao.data_atualizacao)  # Converte a string para datetime
 
+            # Adicionar resolução caso exista
+            if reclamacao.resolucoes:
+                resolucao = reclamacao.resolucoes[0]  # Assume que há apenas uma resolução por reclamação
+                reclamacao.resolucao_descricao = resolucao.descricao
+                reclamacao.resolucao_responsavel = resolucao.responsavel
+                reclamacao.resolucao_data = resolucao.data_resolucao.strftime('%d/%m/%Y %H:%M')
+            else:
+                reclamacao.resolucao_descricao = None
+                reclamacao.resolucao_responsavel = None
+                reclamacao.resolucao_data = None
+
         return render_template('Home_page/index.html', usuarios=usuarios, reclamacoes=reclamacoes)
     except Exception as e:
         print(f"Erro ao buscar os dados: {str(e)}")
         return "Houve um erro ao buscar os dados", 500
+
 
 @reclamacao_bp.route('/buscar_reclamacoes', methods=['GET'])
 def buscar_reclamacoes():
@@ -115,19 +127,28 @@ def buscar_reclamacoes():
         reclamacoes = reclamacoes_query.all()
         reclamacoes_data = [
             {
-                'usuario': f"{reclamacao.usuario.nome} {reclamacao.usuario.profissao}",
+                'usuario': "Anônimo" if reclamacao.anonimo else (reclamacao.usuario.nome + " " + reclamacao.usuario.profissao),
                 'bairro': reclamacao.bairro,
+                'anonimo': reclamacao.anonimo,
                 'data_atualizacao': reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y'),
                 'descricao': reclamacao.descricao,
-                'anexo': reclamacao.anexo
+                'anexo': reclamacao.anexo,
+                'resolvido': True if reclamacao.resolucoes else False,  # Verificando se há resolução
+                'resolucao_descricao': reclamacao.resolucoes[0].descricao if reclamacao.resolucoes else None,
+                'resolucao_responsavel': reclamacao.resolucoes[0].responsavel if reclamacao.resolucoes else None,
+                'resolucao_data': reclamacao.resolucoes[0].data_resolucao.strftime('%H:%M %d/%m/%Y') if reclamacao.resolucoes else None,  # Corrigido para 'data_resolucao'
             }
             for reclamacao in reclamacoes
         ]
+
+
 
         return jsonify(reclamacoes_data)
     except Exception as e:
         print(f"Erro ao buscar os dados: {str(e)}")
         return jsonify({"error": "Houve um erro ao buscar os dados"}), 500
+
+
     
 @reclamacao_bp.route('/resolver_reclamacao', methods=['POST'])
 def resolver_reclamacao():
@@ -140,7 +161,7 @@ def resolver_reclamacao():
         reclamacao_existente = Reclamacao.query.filter_by(id=reclamacao_id).first()
         if reclamacao_existente:
             flash("Reclamação já existente", 'warning')  # Mensagem de advertência
-            return redirect(url_for('reclamacao.listar_reclamacoes'))  # Redireciona para a lista de reclamações
+            # return redirect(url_for('reclamacao.listar_reclamacoes'))  # Redireciona para a lista de reclamações
 
         # Verifica se os campos obrigatórios foram preenchidos
         if not reclamacao_id:

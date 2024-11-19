@@ -1,211 +1,292 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-    <script src="https://kit.fontawesome.com/a1f3395f52.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_homePage/reset.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_flash/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_homePage/navbar.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/css_homePage/style.css') }}">
-</head>
+    <script
+      src="https://kit.fontawesome.com/a1f3395f52.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/css_homePage/reset.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/css_flash/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/css_homePage/navbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/css_homePage/style.css') }}"
+    />
+  </head>
 
-<body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div class="flashes">
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flashes">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
 
     <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-left">
-                <a href="#" class="menu-icons" id="notification-icon">
-                    <i class="fa-solid fa-bell"></i>
-                </a>
+      <div class="navbar-container">
+        <div class="navbar-left">
+          <a href="#" class="menu-icons" id="notification-icon">
+            <i class="fa-solid fa-bell"></i>
+          </a>
 
-                <div id="notification-overlay" class="overlay">
-                    <div class="popup">
-                        <h2>Notificações</h2>
-                        <p>Você tem novas notificações!</p>
-                        <button id="close-popup" class="close-btn">Fechar</button>
-                    </div>
-                </div>
+          <div id="notification-overlay" class="overlay">
+            <div class="popup">
+              <h2>Notificações</h2>
+              <p>Você tem novas notificações!</p>
+              <button id="close-popup" class="close-btn">Fechar</button>
+            </div>
+          </div>
 
-                <input type="text" class="search-bar" placeholder="Pesquisar" oninput="searchReclamacoes()" id="searchInput">
-                <div class="form-icons">
-                    <a href="#" class="menu-icons">
-                        <i class="fa-solid fa-house"></i>
-                    </a>
-                    <a href="/index" class="menu-icons">
-                        <i class="fa-solid fa-comment-dots"></i>
-                    </a>
-                    <a href="/graficos" class="menu-icons">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar">{{ session['nickname'] }}</div>
-                <div class="user-details">
-                    <span class="username">{{ session['usuario_nome'] }}</span>
-                    <span class="role">{{ session['usuario_profissao'] }}</span>
-                </div>
-            </div>
+          <input
+            type="text"
+            class="search-bar"
+            placeholder="Pesquisar"
+            oninput="searchReclamacoes()"
+            id="searchInput"
+          />
+          <div class="form-icons">
+            <a href="#" class="menu-icons">
+              <i class="fa-solid fa-house"></i>
+            </a>
+            <a href="/index" class="menu-icons">
+              <i class="fa-solid fa-comment-dots"></i>
+            </a>
+            <a href="/graficos" class="menu-icons">
+              <i class="fa-solid fa-chart-pie"></i>
+            </a>
+          </div>
         </div>
+        <div class="user-info">
+          <div class="user-avatar">{{ session['nickname'] }}</div>
+          <div class="user-details">
+            <span class="username">{{ session['usuario_nome'] }}</span>
+            <span class="role">{{ session['usuario_profissao'] }}</span>
+          </div>
+        </div>
+      </div>
     </nav>
 
     <div class="container">
-        <h2>Reclamações</h2>
-        <div id="postsContainer">
-            {% for reclamacao in reclamacoes %}
-                <div class="complaint-post">
-                    <div class="complaint-header">
-                        {% if not reclamacao.anonimo %}
-                            <span class="complaint-user">{{ reclamacao.usuario.nome }} {{ reclamacao.usuario.profissao }}</span><br>
-                            <span class="complaint-location"> {{reclamacao.id}} {{ reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y') }}</span>
-                        {% else %}
-                            <span class="complaint-user">Anônimo</span><br>
-                            <span class="complaint-location">Localização Anônima</span>
-                        {% endif %}
-                    </div>
-                    <div class="complaint-description">
-                        {{ reclamacao.descricao }}
-                        {% if session['administrador'] == 1 %}
-                            <button class="resolve-btn" onclick="openModal({{ reclamacao.id }})">Resolver</button>
-                        {% endif %}
-                        
-                        {% if reclamacao.estado == 0 %}
-                            <p>Status: Aguardando Conclusão</p>
-                        {% elif reclamacao.estado == 1 %}
-                            <p>Status: Concluído</p>
-                        {% endif %}
-                    </div>
-                    <div class="complaint-sector">
-                        {% if reclamacao.anexo %}
-                            <img src="{{ url_for('static', filename=reclamacao.anexo) }}" alt="Anexo" style="max-width: 300px; height: auto;">
-                        {% endif %}
-                    </div>
-                </div>
+      <h2>Reclamações</h2>
+      <div id="postsContainer">
+        {% for reclamacao in reclamacoes %}
+        <div class="complaint-post">
+          <div class="complaint-header">
+            {% if not reclamacao.anonimo %}
+            <span class="complaint-user">
+              {{ reclamacao.usuario.nome }} {{ reclamacao.usuario.profissao }} </span
+            ><br />
+            <span class="complaint-location">
+              {{ reclamacao.bairro }} {{
+              reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y') }}
+            </span>
             {% else %}
-                <p>Sem reclamações para exibir.</p>
-            {% endfor %}
-        </div>
-
-        <!-- Modal -->
-        <div id="modal-resolve" class="modal">
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <h2>Resolver Reclamação</h2>
-                <form method="POST" action="{{ url_for('reclamacao.resolver_reclamacao') }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="reclamacao_id" id="reclamacaoId" value="{{ reclamacao_id }}">
-                    <label for="resolucao">Como foi resolvido:</label>
-                    <textarea name="resolucao" id="resolucao" required></textarea>
-                    
-                    <label for="responsavel">Resolvido por:</label>
-                    <input type="text" name="responsavel" id="responsavel" value="{{ session['usuario_nome'] }}" readonly>
-                    
-                    <button type="submit" class="submit-btn">Enviar</button>
-                </form>
-                
-                
-                
+            <span class="complaint-user">Anônimo</span><br />
+            <span class="complaint-location">
+              {{ reclamacao.bairro }} {{
+              reclamacao.data_atualizacao.strftime('%H:%M %d/%m/%Y') }}
+            </span>
+            {% endif %}
+          </div>
+          <div class="complaint-description">
+            {{ reclamacao.descricao }} {% if session['administrador'] == 1 %}
+            <button
+              class="resolve-btn"
+              onclick="openModal({{ reclamacao.id }})"
+            >
+              Resolver
+            </button>
+            {% endif %} {% if reclamacao.estado == 0 %}
+            <p>Status: Aguardando Conclusão</p>
+            {% elif reclamacao.estado == 1 %}
+            <p>Status: Concluído</p>
+            <!-- Exibir detalhes da resolução -->
+            {% if reclamacao.resolucao_descricao %}
+            <div class="resolved-info">
+              <p>
+                <strong>Resolução:</strong> {{ reclamacao.resolucao_descricao }}
+              </p>
+              <p>
+                <strong>Responsável:</strong> {{
+                reclamacao.resolucao_responsavel }}
+              </p>
+              <p>
+                <strong>Data de Resolução:</strong> {{ reclamacao.resolucao_data
+                }}
+              </p>
             </div>
+            {% endif %} {% endif %}
+          </div>
+          <div class="complaint-sector">
+            {% if reclamacao.anexo %}
+            <img
+              src="{{ url_for('static', filename=reclamacao.anexo) }}"
+              alt="Anexo"
+              style="max-width: 300px; height: auto"
+            />
+            {% endif %}
+          </div>
         </div>
+        {% else %}
+        <p>Sem reclamações para exibir.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Modal -->
+      <div id="modal-resolve" class="modal">
+        <div class="modal-content">
+          <span class="close-btn" onclick="closeModal()">&times;</span>
+          <h2>Resolver Reclamação</h2>
+          <form
+            method="POST"
+            action="{{ url_for('reclamacao.resolver_reclamacao') }}"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input
+              type="hidden"
+              name="reclamacao_id"
+              id="reclamacaoId"
+              value="{{ reclamacao_id }}"
+            />
+            <label for="resolucao">Como foi resolvido:</label>
+            <textarea name="resolucao" id="resolucao" required></textarea>
+
+            <label for="responsavel">Resolvido por:</label>
+            <input
+              type="text"
+              name="responsavel"
+              id="responsavel"
+              value="{{ session['usuario_nome'] }}"
+              readonly
+            />
+
+            <button type="submit" class="submit-btn">Enviar</button>
+          </form>
+        </div>
+      </div>
     </div>
 
     <script>
-        function validateForm() {
-            const resolucao = document.getElementById('resolucao').value;
-            const responsavel = document.getElementById('responsavel').value;
+      function validateForm() {
+        const resolucao = document.getElementById("resolucao").value;
+        const responsavel = document.getElementById("responsavel").value;
 
-            if (!resolucao || !responsavel) {
-                alert('Todos os campos devem ser preenchidos!');
-                return false;
-            }
-            return true;
+        if (!resolucao || !responsavel) {
+          alert("Todos os campos devem ser preenchidos!");
+          return false;
         }
+        return true;
+      }
 
-        function openModal(reclamacaoId) {
-            // Exibir o modal
-            const modal = document.getElementById('modal-resolve');
-            modal.style.display = 'flex';
-            // Inserir o ID da reclamação no formulário
-            const inputReclamacaoId = document.getElementById('reclamacaoId');
-            inputReclamacaoId.value = reclamacaoId;
-            document.body.style.overflow = 'hidden'; // Desabilitar o scroll da página ao abrir o modal
-        }
+      function openModal(reclamacaoId) {
+        // Exibir o modal
+        const modal = document.getElementById("modal-resolve");
+        modal.style.display = "flex";
+        // Inserir o ID da reclamação no formulário
+        const inputReclamacaoId = document.getElementById("reclamacaoId");
+        inputReclamacaoId.value = reclamacaoId;
+        document.body.style.overflow = "hidden"; // Desabilitar o scroll da página ao abrir o modal
+      }
 
-        function closeModal() {
-            // Ocultar o modal
-            const modal = document.getElementById('modal-resolve');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Permitir o scroll da página novamente
-        }
+      function closeModal() {
+        // Ocultar o modal
+        const modal = document.getElementById("modal-resolve");
+        modal.style.display = "none";
+        document.body.style.overflow = "auto"; // Permitir o scroll da página novamente
+      }
 
-        // Exibir o popup e o fundo preto ao clicar no ícone
-        document.getElementById('notification-icon').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('notification-overlay').style.display = 'flex';
+      // Exibir o popup e o fundo preto ao clicar no ícone
+      document
+        .getElementById("notification-icon")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          document.getElementById("notification-overlay").style.display =
+            "flex";
         });
 
-        // Fechar o popup ao clicar no botão "Fechar"
-        document.getElementById('close-popup').addEventListener('click', function () {
-            document.getElementById('notification-overlay').style.display = 'none';
+      // Fechar o popup ao clicar no botão "Fechar"
+      document
+        .getElementById("close-popup")
+        .addEventListener("click", function () {
+          document.getElementById("notification-overlay").style.display =
+            "none";
         });
 
-        // Função para realizar a busca usando AJAX
-        function searchReclamacoes() {
-            const searchQuery = document.getElementById('searchInput').value;
-            fetch(`/buscar_reclamacoes?search=${encodeURIComponent(searchQuery)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const postsContainer = document.getElementById('postsContainer');
-                    postsContainer.innerHTML = ''; // Limpa os resultados anteriores
+      // Função para realizar a busca usando AJAX
+      function searchReclamacoes() {
+  const searchQuery = document.getElementById("searchInput").value;
+  fetch(`/buscar_reclamacoes?search=${encodeURIComponent(searchQuery)}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const postsContainer = document.getElementById("postsContainer");
+      postsContainer.innerHTML = ""; // Limpa os resultados anteriores
 
-                    if (data.length === 0) {
-                        postsContainer.innerHTML = '<p>Sem reclamações para exibir.</p>';
-                        return;
-                    }
+      if (data.length === 0) {
+        postsContainer.innerHTML = "<p>Sem reclamações para exibir.</p>";
+        return;
+      }
 
-                    // Cria o HTML para cada reclamação
-                    data.forEach(reclamacao => {
-                        const post = document.createElement('div');
-                        post.classList.add('complaint-post');
+      // Cria o HTML para cada reclamação
+      data.forEach((reclamacao) => {
+        const post = document.createElement("div");
+        post.classList.add("complaint-post");
 
-                        post.innerHTML = `
-                            <div class="complaint-header">
-                                <span class="complaint-user">${reclamacao.usuario.nome}</span><br>
-                                <span class="complaint-location">${reclamacao.bairro} ${reclamacao.data_atualizacao}</span>
-                            </div>
-                            <div class="complaint-description">${reclamacao.descricao}</div>
-                            <div class="complaint-sector">
-                                ${reclamacao.anexo ? `<img src="/static/${reclamacao.anexo}" alt="Anexo" style="max-width: 300px; height: auto;">` : ''}
-                            </div>
-                        `;
-                        postsContainer.appendChild(post);
-                    });
-                })
-                .catch(error => console.error('Erro ao buscar reclamações:', error));
-        }
-        setTimeout(function() {
-            var flashes = document.querySelectorAll('.alert');
-            flashes.forEach(function(flash) {
-                flash.style.display = 'none';
-            });
-        }, 2000);  // Mensagem desaparece após 5 segundos
-        
+        // Criação do conteúdo da reclamação
+        post.innerHTML = `
+          <div class="complaint-header">
+            <span class="complaint-user">${reclamacao.usuario}</span><br>
+            <span class="complaint-location">${reclamacao.bairro} ${reclamacao.data_atualizacao}</span>
+          </div>
+          <div class="complaint-description">
+            ${reclamacao.descricao}
+            ${reclamacao.resolvido ? "<p>Status: Resolvido</p>" : "<p>Status: Aguardando Conclusão</p>"}
+            
+            <!-- Exibir o botão de resolver apenas se o status for 'Aguardando Conclusão' e o usuário for administrador -->
+            ${!reclamacao.resolvido ? 
+              `<button class="resolve-btn" onclick="openModal(${reclamacao.id})">Resolver</button>` : ""}
+            
+            <!-- Exibir detalhes da resolução se houver -->
+            ${reclamacao.resolucao_descricao ?
+              `<div class="resolved-info">
+                <p><strong>Resolução:</strong> ${reclamacao.resolucao_descricao}</p>
+                <p><strong>Responsável:</strong> ${reclamacao.resolucao_responsavel}</p>
+                <p><strong>Data de Resolução:</strong> ${reclamacao.resolucao_data}</p>
+              </div>` : ""}
+          </div>
+          <div class="complaint-sector">
+            ${reclamacao.anexo ?
+              `<img src="/static/${reclamacao.anexo}" alt="Anexo" style="max-width: 300px; height: auto;">` : ""}
+          </div>
+        `;
+        postsContainer.appendChild(post);
+      });
+    })
+    .catch((error) =>
+      console.error("Erro ao buscar reclamações:", error)
+    );
+}
+
+
+      setTimeout(function () {
+        var flashes = document.querySelectorAll(".alert");
+        flashes.forEach(function (flash) {
+          flash.style.display = "none";
+        });
+      }, 2000); // Mensagem desaparece após 5 segundos
     </script>
-
-</body>
-
+  </body>
 </html>
